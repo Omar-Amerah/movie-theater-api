@@ -4,7 +4,7 @@ const showRouter = Router();
 
 const { User } = require("../models/User")
 const { Show } = require("../models/Show");
-const { showvalid, genrevalid, ratingvalid, idupdatesvalid } = require("../middleware/show.valid");
+const { showvalid, genrevalid, ratingvalid, idupdatesvalid, showdelete } = require("../middleware/show.valid");
 
 
 showRouter.get("/shows", async (req, res) => {
@@ -13,7 +13,6 @@ showRouter.get("/shows", async (req, res) => {
 })
 
 showRouter.get("/shows/:id", showvalid, async (req, res) => {
-    
     res.send(req.selectedshow)
 })
 
@@ -27,21 +26,11 @@ showRouter.put("/shows/:id/watched/:newrating", ratingvalid, async (req, res) =>
 
 
 showRouter.put("/shows/:id/updates", idupdatesvalid, async (req, res) => {
-    res.send(res.selectedshow)
+    res.send(req.selectedshow)
 })
 
-showRouter.delete("/shows/:id/delete", async (req, res) => {
-    const id = req.params.id
-    const show = await Show.findByPk(id)
-    if(show)
-    {
-        await show.destroy()
-        res.send("Deleted")
-    }
-    else
-    {
-        res.status(404).send("Error")
-    }
+showRouter.delete("/shows/:id/delete",showdelete, async (req, res) => {
+    res.send("Deleted")
 })
 
 module.exports = showRouter;

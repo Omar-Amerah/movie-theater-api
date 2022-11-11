@@ -53,16 +53,17 @@ async function ratingvalid(req, res, next)
 async function idupdatesvalid(req, res, next)
 {
     const id = req.params.id
+    const show = await Show.findByPk(id)
     req.selectedshow = await Show.findByPk(id)
     if(req.selectedshow)
     {
-        if(req.selectedshow.status !== "on-going")
+        if(show.status !== "on-going")
         {
-            await req.selectedshow.update({status: "on-going"})
+            await show.update({status: "on-going"})
         }
         else
         {
-            await req.selectedshow.update({status: "canceled"})
+            await show.update({status: "canceled"})
         }
         next();
     }
@@ -72,9 +73,20 @@ async function idupdatesvalid(req, res, next)
     }
 }
 
-// async function showdelete(req, res, next)
-// {
-//     const id = req
-// }
+async function showdelete(req, res, next)
+{
+    const id = req.params.id
+    const show = await Show.findByPk(id)
+    req.selectedshow = await Show.findByPk(id)
+    if(show)
+    {
+        await show.destroy()
+        next();
+    }
+    else
+    {
+        res.status(404).send("Error")
+    }
+}
 
-module.exports = { showvalid, genrevalid, ratingvalid, idupdatesvalid };
+module.exports = { showvalid, genrevalid, ratingvalid, idupdatesvalid, showdelete };
