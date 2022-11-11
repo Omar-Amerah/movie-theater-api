@@ -5,7 +5,7 @@ const userRouter = Router();
 const { User } = require("../models/User")
 const { Show } = require("../models/Show")
 
-const { uservalid } = require("../middleware/users.valid")
+const { uservalid, usershowvalid} = require("../middleware/users.valid")
 
 userRouter.get("/user", async  (req, res) => {
     const allusers = await User.findAll()
@@ -22,14 +22,9 @@ userRouter.get("/user/:id/shows", uservalid, async (req, res) => {
     res.send(shows)
 })
 
-userRouter.put("/users/:iduser/shows/:idshow", async(req, res) => {
-    const show = await Show.findByPk(req.params.idshow)
-    if(show && req.params.iduser)
-    {
-        await show.update({userId: req.params.iduser})
-        res.send(show)
-    }
+userRouter.put("/users/:iduser/shows/:idshow",usershowvalid, async(req, res) => {
+    res.send(req.show)
 })
-
+ 
 
 module.exports = userRouter;
